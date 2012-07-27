@@ -79,7 +79,15 @@ static void enable_led_notification(void)
 		blink_timer.expires = jiffies +
 				msecs_to_jiffies(blink_interval);
 		blink_count = max_blink_count;
-		add_timer(&blink_timer);
+		/*
+		 * Check for pending timer and use mod_timer
+		 * if it exists instead of attempting to
+		 * add another, which results in a panic
+		 */
+		if (timer_pending(&blink_timer))
+			mod_timer(&blink_timer, blink_timer.expires);
+		else
+			add_timer(&blink_timer);
 	}
 
 	bln_enable_backlights();
