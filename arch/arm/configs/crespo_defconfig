@@ -1,5 +1,5 @@
 CONFIG_EXPERIMENTAL=y
-CONFIG_LOCALVERSION="-bln-voodoosound-bigmem-crtoff"
+CONFIG_LOCALVERSION="-bln-voodoosound-bigmem-crtoff-powerhal"
 CONFIG_KERNEL_LZMA=y
 # CONFIG_SWAP is not set
 CONFIG_SYSVIPC=y
