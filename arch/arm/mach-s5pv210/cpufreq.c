@@ -34,6 +34,8 @@ static DEFINE_MUTEX(set_freq_lock);
 
 /* APLL M,P,S values for 1.2G/800Mhz */
 #define APLL_VAL_1200	((1 << 31) | (150 << 16) | (3 << 8) | 1)
+#define APLL_VAL_1100   ((1 << 31) | (275 << 16) | (6 << 8) | 1)
+#define APLL_VAL_1000   ((1 << 31) | (125 << 16) | (3 << 8) | 1)
 #define APLL_VAL_800	((1 << 31) | (100 << 16) | (3 << 8) | 1)
 
 #define SLEEP_FREQ	(800 * 1000) /* Use 800MHz when entering sleep */
@@ -395,10 +397,21 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 		 * 6-1. Set PMS values
 		 * 6-2. Wait untile the PLL is locked
 		 */
-		if (index == L0)
-			__raw_writel(APLL_VAL_1200, S5P_APLL_CON);
-		else
-			__raw_writel(APLL_VAL_800, S5P_APLL_CON);
+        switch (index) {
+            case L0:
+                __raw_writel(APLL_VAL_1200, S5P_APLL_CON);
+                break;
+            case L1:
+                __raw_writel(APLL_VAL_1100, S5P_APLL_CON);
+                break;
+            case L2:
+                __raw_writel(APLL_VAL_1000, S5P_APLL_CON);
+                break;
+           default:
+                __raw_writel(APLL_VAL_800, S5P_APLL_CON);
+                break;
+
+        }
 
 		do {
 			reg = __raw_readl(S5P_APLL_CON);
